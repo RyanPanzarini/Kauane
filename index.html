@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Amor | Feliz Dia dos Namorados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #fff9fa;
+            color: #5c2c3e;
+            scroll-behavior: smooth;
+        }
+        
+        .font-cursive {
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        .font-great {
+            font-family: 'Great Vibes', cursive;
+        }
+        
+        .heart-beat {
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        .floating-hearts {
+            position: absolute;
+            color: #e63946;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.7;
+        }
+        
+        .letter {
+            transform: rotate(-2deg);
+            transition: all 0.3s ease;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .letter:hover {
+            transform: rotate(0deg) scale(1.05);
+            box-shadow: 8px 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #e63946;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 4px #e63946;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(500px) rotate(360deg); opacity: 0; }
+        }
+        
+        .photo-gallery img {
+            transition: all 0.3s ease;
+        }
+        
+        .photo-gallery img:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .menu-item {
+            position: relative;
+        }
+        
+        .menu-item:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #e63946;
+            transition: width 0.3s ease;
+        }
+        
+        .menu-item:hover:after {
+            width: 100%;
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 3px;
+            bottom: -5px;
+            left: 20%;
+            background-color: #e63946;
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.5s ease;
+        }
+        
+        .section.active .section-title:after {
+            transform: scaleX(1);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <!-- Floating Hearts -->
+    <div id="floating-hearts-container"></div>
+
+    <!-- Music Player (hidden by default) -->
+    <div id="music-player" class="fixed bottom-4 right-4 bg-white p-2 rounded-full shadow-lg hidden" data-playing="false">
+        <audio id="bg-music" loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        </audio>
+        <button id="toggle-music" class="bg-pink-100 text-red-700 rounded-full p-3 focus:outline-none hover:bg-pink-200 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed w-full z-50 bg-white bg-opacity-90 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#" class="text-2xl font-great text-red-700">Nosso Amor</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="menu-item text-gray-700 hover:text-red-700 py-2">Início</a>
+                <a href="#time" class="menu-item text-gray-700 hover:text-red-700 py-2">Nosso Tempo</a>
+                <a href="#gallery" class="menu-item text-gray-700 hover:text-red-700 py-2">Fotos</a>
+                <a href="#timeline" class="menu-item text-gray-700 hover:text-red-700 py-2">Nossa História</a>
+                <a href="#letters" class="menu-item text-gray-700 hover:text-red-700 py-2">Cartas</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-red-700 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </nav>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white py-2 px-4 shadow-md">
+            <a href="#home" class="block py-2 text-gray-700 hover:text-red-700">Início</a>
+            <a href="#time" class="block py-2 text-gray-700 hover:text-red-700">Nosso Tempo</a>
+            <a href="#gallery" class="block py-2 text-gray-700 hover:text-red-700">Fotos</a>
+            <a href="#timeline" class="block py-2 text-gray-700 hover:text-red-700">Nossa História</a>
+            <a href="#letters" class="block py-2 text-gray-700 hover:text-red-700">Cartas</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="section min-h-screen flex items-center justify-center bg-gradient-to-b from-red-50 to-pink-50 relative overflow-hidden">
+            <div class="container mx-auto px-6 py-20 text-center">
+                <h1 class="text-4xl md:text-6xl font-great text-red-700 mb-6">Feliz Dia dos Namorados</h1>
+                <p class="text-xl md:text-2xl font-cursive text-gray-700 mb-10">"Bem-vinda ao nosso cantinho do amor. Aqui está um pedacinho do quanto você é especial pra mim."</p>
+                <a href="#time" class="inline-flex items-center px-8 py-4 bg-red-600 hover:bg-red-700 text-white rounded-full text-lg font-medium transition duration-300 transform hover:scale-105 shadow-lg">
+                    Começar nossa jornada
+                    <span class="ml-2 text-xl heart-beat">❤️</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Time Together Section -->
+        <section id="time" class="section py-20 bg-white relative">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="section-title text-3xl md:text-4xl font-great text-gray-800 mb-16">Nosso Tempo Juntos</h2>
+                
+                <div class="max-w-2xl mx-auto bg-pink-50 p-8 rounded-xl shadow-lg">
+                    <p class="text-lg text-gray-700 mb-8">Cada momento ao seu lado é um presente que eu guardo com carinho no meu coração.</p>
+                    
+                    <div id="time-together" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <div id="years" class="text-3xl font-bold text-red-700">0</div>
+                            <div class="text-gray-600">Anos</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <div id="months" class="text-3xl font-bold text-red-700">0</div>
+                            <div class="text-gray-600">Meses</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <div id="days" class="text-3xl font-bold text-red-700">0</div>
+                            <div class="text-gray-600">Dias</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <div id="hours" class="text-3xl font-bold text-red-700">0</div>
+                            <div class="text-gray-600">Horas</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-md col-span-2 md:col-span-4">
+                            <div id="minutes" class="text-3xl font-bold text-red-700">0</div>
+                            <div class="text-gray-600">Minutos</div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 italic">Desde 21/12/2021 às 02:00 - O momento em que nossas vidas se tornaram uma só</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Photo Gallery -->
+        <section id="gallery" class="section py-20 bg-pink-50">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title text-3xl md:text-4xl font-great text-center text-gray-800 mb-16">Nossos Momentos</h2>
+                
+                <div class="photo-gallery grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Photo 1 -->
+                    <div class="relative overflow-hidden rounded-xl shadow-md">
+                        <img src="imagens/IMG-20250609-WA0092.jpg" alt="Nossa foto" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-70 transition duration-300"></div>
+                        <div class="absolute bottom-0 left-0 p-4 text-white opacity-0 hover:opacity-100 transition duration-300">
+                            <p class="font-cursive text-xl">Nosso primeiro encontro 💕</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Photo 2 -->
+                    <div class="relative overflow-hidden rounded-xl shadow-md">
+                        <img src="imagens/IMG-20250609-WA0085.jpg" alt="Nossa foto" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-70 transition duration-300"></div>
+                        <div class="absolute bottom-0 left-0 p-4 text-white opacity-0 hover:opacity-100 transition duration-300">
+                            <p class="font-cursive text-xl">Nossa primeira viagem ✈️</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Photo 3 -->
+                    <div class="relative overflow-hidden rounded-xl shadow-md">
+                        <img src="imagens/IMG-20250609-WA0088.jpg" alt="Nossa foto" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-70 transition duration-300"></div>
+                        <div class="absolute bottom-0 left-0 p-4 text-white opacity-0 hover:opacity-100 transition duration-300">
+                            <p class="font-cursive text-xl">Nosso primeiro ano juntos 🎉</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Photo 4 -->
+                    <div class="relative overflow-hidden rounded-xl shadow-md">
+                        <img src="imagens/IMG-20250609-WA0087.jpg" alt="Nossa foto" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-70 transition duration-300"></div>
+                        <div class="absolute bottom-0 left-0 p-4 text-white opacity-0 hover:opacity-100 transition duration-300">
+                            <p class="font-cursive text-xl">Noite estrelada juntos ✨</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Photo 5 -->
+                    <div class="relative overflow-hidden rounded-xl shadow-md">
+                        <img src="imagens/IMG-20250609-WA0086.jpg" alt="Nossa foto" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-70 transition duration-300"></div>
+                        <div class="absolute bottom-0 left-0 p-4 text-white opacity-0 hover:opacity-100 transition duration-300">
+                            <p class="font-cursive text-xl">Nossos momentos engraçados 😂</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Photo 6 - Add More Photos -->
+                    <div class="relative overflow-hidden rounded-xl shadow-md bg-pink-100 flex items-center justify-center h-64">
+                        <div class="text-center p-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            <p class="text-red-700 font-cursive text-xl">Mais fotos chegarão em breve...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline -->
+        <section id="timeline" class="section py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title text-3xl md:text-4xl font-great text-center text-gray-800 mb-16">Nossa História de Amor</h2>
+                
+                <div class="relative max-w-3xl mx-auto">
+                    <!-- Timeline connector -->
+                    <div class="absolute left-1/2 w-1 h-full bg-red-200 transform -translate-x-1/2"></div>
+                    
+                    <!-- Timeline items -->
+                    <div class="space-y-12">
+                        <!-- Item 1 -->
+                        <div class="timeline-item relative pl-8 pr-8 md:pl-0 md:pr-0">
+                            <div class="md:w-1/2 md:mr-auto md:pr-8 ml-0 md:ml-0 pt-1">
+                                <div class="bg-pink-50 p-6 rounded-xl shadow-md border-l-4 border-red-500">
+                                    <div class="flex items-center mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                                        </svg>
+                                        <span class="font-bold text-red-700">18/11/2021</span>
+                                    </div>
+                                    <h3 class="text-xl font-cursive text-gray-800 mb-2">Quando nos conhecemos</h3>
+                                    <p class="text-gray-600">Nossos olhares se cruzaram e foi como se o tempo parasse. Eu sabia que você era especial desde o primeiro momento naquela mesa de sinuca.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 2 -->
+                        <div class="timeline-item relative pl-8 pr-8 md:pl-0 md:pr-0">
+                            <div class="md:w-1/2 md:ml-auto md:pl-8 md:text-right ml-0 md:ml-0 pt-1">
+                                <div class="bg-pink-50 p-6 rounded-xl shadow-md border-r-4 border-red-500">
+                                    <div class="flex justify-end items-center mb-2">
+                                        <span class="font-bold text-red-700">22/11/2021</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-cursive text-gray-800 mb-2">Nosso primeiro encontro</h3>
+                                    <p class="text-gray-600">Aquela noite foi mágica. Conversamos por horas, como se fôssemos velhos amigos. Deus nos uniu de uma forma inexplicável.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 3 -->
+                        <div class="timeline-item relative pl-8 pr-8 md:pl-0 md:pr-0">
+                            <div class="md:w-1/2 md:mr-auto md:pr-8 ml-0 md:ml-0 pt-1">
+                                <div class="bg-pink-50 p-6 rounded-xl shadow-md border-l-4 border-red-500">
+                                    <div class="flex items-center mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                        </svg>
+                                        <span class="font-bold text-red-700">21/12/2021</span>
+                                    </div>
+                                    <h3 class="text-xl font-cursive text-gray-800 mb-2">Nosso primeiro eu te amo</h3>
+                                    <p class="text-gray-600">Me lembro que naquele dia só uma coisa importava: você.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 4 -->
+                        <div class="timeline-item relative pl-8 pr-8 md:pl-0 md:pr-0">
+                            <div class="md:w-1/2 md:ml-auto md:pl-8 md:text-right ml-0 md:ml-0 pt-1">
+                                <div class="bg-pink-50 p-6 rounded-xl shadow-md border-r-4 border-red-500">
+                                    <div class="flex justify-end items-center mb-2">
+                                        <span class="font-bold text-red-700">12/06/2022</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-cursive text-gray-800 mb-2">Nosso primeiro Dia dos Namorados</h3>
+                                    <p class="text-gray-600">Celebrando um ano de amor e descobertas. Cada dia ao seu lado é melhor que o anterior.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 5 - Future -->
+                        <div class="timeline-item relative pl-8 pr-8 md:pl-0 md:pr-0">
+                            <div class="md:w-1/2 md:mr-auto md:pr-8 ml-0 md:ml-0 pt-1">
+                                <div class="bg-pink-50 p-6 rounded-xl shadow-md border-l-4 border-red-500 border-dashed">
+                                    <div class="flex items-center mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span class="font-bold text-red-700">Futuro</span>
+                                    </div>
+                                    <h3 class="text-xl font-cursive text-gray-800 mb-2">Tantos momentos por vir</h3>
+                                    <p class="text-gray-600">Mal posso esperar para escrevermos juntos os próximos capítulos da nossa história de amor. Cada momento com você é um presente.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Music Playlist -->
+        <section class="section py-20 bg-pink-50">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title text-3xl md:text-4xl font-great text-center text-gray-800 mb-16">A trilha sonora do nosso amor 🎶</h2>
+                
+                <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-8">
+                        <p class="text-gray-700 mb-6">Cada música nos lembra de momentos especiais que vivemos juntos. Aqui está nossa playlist do amor:</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Playlist Item 1 -->
+                            <div class="flex items-center bg-pink-50 rounded-lg p-4">
+                                <div class="flex-shrink-0 mr-4">
+                                    <img src="imagens/ab67616d0000b2733b09db5c0356ad00d2be5b90.jpeg" alt="Album cover" class="w-16 h-16 rounded">
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Vem cá</h4>
+                                    <p class="text-sm text-gray-600">Altamira</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Playlist Item 2 -->
+                            <div class="flex items-center bg-pink-50 rounded-lg p-4">
+                                <div class="flex-shrink-0 mr-4">
+                                    <img src="imagens/maxresdefault.jpg" alt="Album cover" class="w-16 h-16 rounded">
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Tudo que você quiser</h4>
+                                    <p class="text-sm text-gray-600">Luan Santana</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Playlist Item 3 -->
+                            <div class="flex items-center bg-pink-50 rounded-lg p-4">
+                                <div class="flex-shrink-0 mr-4">
+                                    <img src="imagens/OIP.webp" alt="Album cover" class="w-16 h-16 rounded">
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Marry Your Daughter</h4>
+                                    <p class="text-sm text-gray-600">Brian McKnight.Jr</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Playlist Item 4 -->
+                            <div class="flex items-center bg-pink-50 rounded-lg p-4">
+                                <div class="flex-shrink-0 mr-4">
+                                    <img src="imagens/IMG-20250609-WA0086.jpg" alt="Album cover" class="w-16 h-16 rounded">
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Aqui eu Deixo Qualquer Outra Musica dele</h4>
+                                    <p class="text-sm text-gray-600">Luan Santana</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8">
+                            <a href="https://open.spotify.com/playlist/5vZyoQwrLNtv5KglsotiT6?si=ye7dAc1gQtWrXJQeJqKVfw&pi=aHvd28RgQS2AO" target="_blank" class="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-full transition duration-300">
+                                Ouvir no Spotify
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="currentColor" viewBox="0 0 496 512">
+                                    <path d="M248 8C111.1 8 0 119.1 0 256s111.1 248 248 248 248-111.1 248-248S384.9 8 248 8zm100.7 364.9c-4.2 0-6.8-1.3-10.7-3.6-62.4-37.6-135-39.2-206.7-24.5-3.9 1-9 2.6-11.9 2.6-9.7 0-15.8-7.7-15.8-15.8 0-10.3 6.1-15.2 13.6-16.8 81.9-18.1 165.6-16.5 237 26.2 6.1 3.9 9.7 7.4 9.7 16.5s-7.1 15.4-15.2 15.4zm26.9-65.6c-5.2 0-8.7-2.3-12.3-4.2-62.5-37-155.7-51.9-238.6-29.4-4.8 1.3-7.4 2.6-11.9 2.6-10.7 0-19.4-8.7-19.4-19.4s5.2-17.8 15.5-20.7c27.8-7.8 56.2-13.6 97.8-13.6 64.9 0 127.6 16.1 177 45.5 8.1 4.8 11.3 11 11.3 19.7-.1 10.8-8.5 19.5-19.4 19.5zm31-76.2c-5.2 0-8.4-1.3-12.9-3.9-71.2-42.5-198.5-52.7-280.9-29.7-3.6 1-8.1 2.6-12.9 2.6-13.2 0-23.3-10.3-23.3-23.6 0-13.6 8.4-21.3 17.4-23.9 35.2-10.3 74.6-15.2 117.5-15.2 73 0 149.5 15.2 205.4 47.8 7.8 4.5 12.9 10.7 12.9 22.6 0 13.6-11 23.3-23.2 23.3z"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Love Letters -->
+        <section id="letters" class="section py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title text-3xl md:text-4xl font-great text-center text-gray-800 mb-16">Cartas do Meu Coração</h2>
+                
+                <p class="text-center text-gray-700 max-w-2xl mx-auto mb-12">Algumas mensagens que gostaria que você lesse quando estiver triste, feliz ou simplesmente precisando se lembrar de como é amada.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Letter 1 -->
+                    <div class="letter bg-pink-50 p-6 rounded-lg cursor-pointer transform transition-all duration-300" onclick="openLetter(1)">
+                        <div class="flex items-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            <h3 class="text-xl font-cursive text-gray-800">Para quando você estiver triste</h3>
+                        </div>
+                        <div class="h-32 overflow-hidden relative">
+                            <div class="absolute inset-0 bg-gradient-to-t from-pink-50 to-transparent"></div>
+                            <p class="text-gray-600">Eu sei que às vezes a vida pode ser difícil e pesada. As coisas nem sempre saem como planejamos, e os dias cinzentos parecem não ter fim. Mas quero que você saiba que não está sozinha. Eu estou aqui para você, sempre.<br><br>
+                Você é mais forte do que imagina...</p>
+                        </div>
+                        <p class="text-center text-red-500 mt-3 text-sm">Clique para ler a carta completa</p>
+                    </div>
+                    
+                    <!-- Letter 2 -->
+                    <div class="letter bg-pink-50 p-6 rounded-lg cursor-pointer transform transition-all duration-300" onclick="openLetter(2)">
+                        <div class="flex items-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            <h3 class="text-xl font-cursive text-gray-800">Para quando você estiver feliz</h3>
+                        </div>
+                        <div class="h-32 overflow-hidden relative">
+                            <div class="absolute inset-0 bg-gradient-to-t from-pink-50 to-transparent"></div>
+                            <p class="text-gray-600">Minha alegria, ver você feliz é o que me faz mais feliz no mundo. Seu sorriso ilumina meu dia, seu riso é a melodia mais doce que já ouvi. Guarde esses momentos de felicidade, pois eles são merecidos e verdadeiros. Você é digna de toda alegria...</p>
+                        </div>
+                        <p class="text-center text-red-500 mt-3 text-sm">Clique para ler a carta completa</p>
+                    </div>
+                    
+                    <!-- Letter 3 -->
+                    <div class="letter bg-pink-50 p-6 rounded-lg cursor-pointer transform transition-all duration-300" onclick="openLetter(3)">
+                        <div class="flex items-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            <h3 class="text-xl font-cursive text-gray-800">Para quando você duvidar de si</h3>
+                        </div>
+                        <div class="h-32 overflow-hidden relative">
+                            <div class="absolute inset-0 bg-gradient-to-t from-pink-50 to-transparent"></div>
+                            <p class="text-gray-600">Quero que você saiba o quanto é incrível. Você é inteligente, talentosa, bonita e cheia de luz. Nos momentos em que a insegurança bater à sua porta, lembre-se de tudo que já conquistou e de como você me inspira a ser melhor a cada dia...</p>
+                        </div>
+                        <p class="text-center text-red-500 mt-3 text-sm">Clique para ler a carta completa</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz -->
+        <section class="section py-20 bg-pink-50">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title text-3xl md:text-4xl font-great text-center text-gray-800 mb-16">Quiz do Nosso Amor ❤️</h2>
+                
+                <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div id="quiz-container" class="p-8">
+                        <div id="quiz-start">
+                            <p class="text-gray-700 mb-6">Vamos testar o quanto você me conhece? Responda essas perguntas sobre nós dois e veja sua pontuação no final!</p>
+                            <button onclick="startQuiz()" class="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-medium transition duration-300">
+                                Começar Quiz
+                            </button>
+                        </div>
+                        
+                        <div id="quiz-questions" class="hidden">
+                            <div id="question-container"></div>
+                            <div id="options-container" class="mt-4 space-y-3"></div>
+                            <button id="next-btn" class="mt-6 bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-lg font-medium transition duration-300 hidden">
+                                Próxima Pergunta
+                            </button>
+                        </div>
+                        
+                        <div id="quiz-result" class="hidden text-center">
+                            <h3 class="text-2xl font-cursive text-red-700 mb-4">Resultado do Quiz</h3>
+                            <p id="result-text" class="text-gray-700 mb-6"></p>
+                            <button onclick="restartQuiz()" class="bg-pink-200 hover:bg-pink-300 text-red-700 py-2 px-6 rounded-lg font-medium transition duration-300">
+                                Fazer Novamente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Question -->
+        <section class="section py-20 bg-gradient-to-b from-red-50 to-red-100">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-5xl font-great text-red-700 mb-8">Quer continuar escrevendo essa história de amor comigo?</h2>
+                <p class="text-xl text-gray-700 mb-12">Dizem que todas as histórias de amor são bonitas, mas a nossa é a minha favorita.</p>
+                
+                <div class="flex justify-center space-x-6">
+                    <button id="say-yes" class="px-10 py-4 bg-red-600 hover:bg-red-700 text-white text-xl rounded-full shadow-lg transform transition duration-300 hover:scale-105">
+                        SIM! ❤️
+                    </button>
+                </div>
+                
+                <div id="confetti-container" class="fixed inset-0 pointer-events-none z-50 overflow-hidden hidden"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Letter Modal -->
+    <div id="letter-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white max-w-2xl w-full rounded-xl shadow-2xl overflow-hidden">
+            <div class="bg-red-600 text-white p-4 flex justify-between items-center">
+                <h3 id="letter-modal-title" class="text-xl font-cursive"></h3>
+                <button onclick="closeModal()" class="text-white focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="letter-modal-content" class="p-6 text-gray-700 max-h-96 overflow-y-auto"></div>
+            <div class="bg-gray-50 px-6 py-4 border-t text-right">
+                <button onclick="closeModal()" class="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('floating-hearts-container');
+            const heartCharacters = ['❤️', '💖', '💕', '💗', '💓', '💝'];
+            
+            const heartsCount = 15;
+            
+            for (let i = 0; i < heartsCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-hearts';
+                heart.innerHTML = heartCharacters[Math.floor(Math.random() * heartCharacters.length)];
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = 5 + Math.random() * 10;
+                
+                heart.style.left = `${left}%`;
+                heart.style.top = `${top}%`;
+                heart.style.animationDelay = `${delay}s`;
+                heart.style.animationDuration = `${duration}s`;
+                heart.style.fontSize = `${20 + Math.random() * 20}px`;
+                
+                container.appendChild(heart);
+            }
+        }
+        
+        // Calculate time together
+        function calculateTimeTogether() {
+            // Set your relationship start date (YYYY, MM-1, DD, HH, MM)
+            const startDate = new Date(2021, 11, 21, 2, 0); // December is 11 (0-indexed), 2h da manhã
+            const now = new Date();
+            
+            let years = now.getFullYear() - startDate.getFullYear();
+            let months = now.getMonth() - startDate.getMonth();
+            let days = now.getDate() - startDate.getDate();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            
+            if (months < 0 || (months === 0 && days < 0)) {
+                years--;
+                months += 12;
+            }
+            
+            if (days < 0) {
+                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += prevMonth.getDate();
+                months--;
+            }
+            
+            document.getElementById('years').textContent = years;
+            document.getElementById('months').textContent = months;
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+        }
+        
+        // Letter modal
+        const letters = {
+            1: {
+                title: "Para quando você estiver triste",
+                content: `Kauane<br><br>
+                Eu sei que às vezes a vida pode ser difícil e pesada. As coisas nem sempre saem como planejamos, e os dias cinzentos parecem não ter fim. Mas quero que você saiba que não está sozinha. Eu estou aqui para você, sempre.<br><br>
+                Você é mais forte do que imagina. Já enfrentou tantas coisas difíceis e sempre saiu mais sábia e mais bonita, porque o que você tem dentro de você é luz pura. Juntos podemos enfrentar qualquer tempestade, porque o nosso amor é o meu porto seguro e quero ser o seu também.<br><br>
+                Lembre-se dos nossos momentos felizes, dos abraços que aquecem a alma, dos nossos risos compartilhados. Essa fase vai passar, e eu estarei aqui para celebrar com você quando o sol voltar a brilhar.<br><br>
+                Você é incrível, minha princesa. Nunca duvide disso.<br><br>
+                Com todo meu amor,<br>
+                Seu bebezão que te ama mais que tudo ❤️`
+            },
+            2: {
+                title: "Para quando você estiver feliz",
+                content: `Amor,<br><br>
+                Ver você feliz é o que me faz mais feliz no mundo. Seu sorriso ilumina meu dia, seu riso é a melodia mais doce que já ouvi. Quero congelar esses momentos para que eles durem para sempre.<br><br>
+                Guarde essa felicidade no coração, porque ela é merecida e verdadeira. Você é digna de toda a alegria que o mundo pode oferecer, e eu farei de tudo para continuar vendo esse brilho nos seus olhos.<br><br>
+                Você é minha estrela-guia, minha fonte de inspiração, meu motivo para acordar todos os dias com um sorriso no rosto. Que possamos multiplicar esses momentos de felicidade e construirmos uma vida cheia de sorrisos, amor e cumplicidade.<br><br>
+                Te amo com todo meu coração, hoje e sempre.<br><br>
+                Eternamente seu,<br>
+                Ryanzinho 💖`
+            },
+            3: {
+                title: "Para quando você duvidar de si",
+                content: `Minha Preguicinha,<br><br>
+                Quero que você saiba o quanto é incrível. Sim, eu sei que às vezes ficamos inseguros, que duvidamos de nós mesmos e de nossas capacidades. Mas nessas horas quero que você se lembre:<br><br>
+                Você é inteligente, talentosa, bonita e cheia de luz. Você consegue coisas incríveis quando coloca sua mente nelas. Você me inspira a ser melhor a cada dia, com sua força e sua determinação.<br><br>
+                Olhe para trás e veja tudo que já conquistou. Cada desafio superado, cada sorriso que você espalhou, cada coração que você tocou - especialmente o meu. Você é uma pessoa especial e única, e eu tenho a sorte gigantesca de poder te chamar de minha namorada.<br><br>
+                Quando a dúvida bater, lembre-se: eu acredito em você mais do que em qualquer coisa neste mundo. E se eu acredito, você pode acreditar também.<br><br>
+                Com admiração e amor infinito,<br>
+                Seu maior fã 💕`
+            }
+        };
+        
+        function openLetter(id) {
+            const modal = document.getElementById('letter-modal');
+            const title = document.getElementById('letter-modal-title');
+            const content = document.getElementById('letter-modal-content');
+            
+            title.textContent = letters[id].title;
+            content.innerHTML = letters[id].content;
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            document.getElementById('letter-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Quiz functionality
+        const quizQuestions = [
+            {
+                question: "Quando foi nosso primeiro beijo?",
+                options: [
+                    "14/03/2021",
+                    "18/11/2021",
+                    "14/02/2023",
+                    "Ainda não beijamos"
+                ],
+                answer: 1,
+                answerText: "Nosso primeiro beijo foi em 18/11/2021, um momento mágico que nunca esquecerei!"
+            },
+            {
+                question: "Qual é minha comida favorita que você faz?",
+                options: [
+                    "Lasanha",
+                    "Bolo de chocolate",
+                    "Bife a Milanesa",
+                    "Nenhuma, você não cozinha"
+                ],
+                answer: 2,
+                answerText: "Seu bife a milanesa é divino! Nunca comi um tão bom quanto o seu."
+            },
+            {
+                question: "O que mais amo em você?",
+                options: [
+                    "Seu sorriso",
+                    "Seu jeito carinhoso",
+                    "Sua inteligência",
+                    "Todas as anteriores"
+                ],
+                answer: 3,
+                answerText: "Acertou! Eu amo tudo em você, é impossível escolher apenas uma coisa."
+            },
+            {
+                question: "Qual foi nossa primeira viagem juntos?",
+                options: [
+                    "Rio de Janeiro",
+                    "São Paulo",
+                    "Nenhuma, ainda não viajamos",
+                    "Casamento do teu primo"
+                ],
+                answer: 3,
+                answerText: "Foi para o casamento do teu primo, lembra? Foi um final de semana perfeito!"
+            },
+            {
+                question: "Qual música representa nosso relacionamento?",
+                options: [
+                    "Vem cá - Altamira",
+                    "Tudo que você quiser - Luan Santana",
+                    "Marry Your Daughter - Brian McKnight.Jr",
+                    "Todas as anteriores"
+                ],
+                answer: 3,
+                answerText: "Todas essas músicas representam nosso amor de alguma forma especial."
+            }
+        ];
+        
+        let currentQuestion = 0;
+        let score = 0;
+        
+        function startQuiz() {
+            document.getElementById('quiz-start').classList.add('hidden');
+            document.getElementById('quiz-questions').classList.remove('hidden');
+            showQuestion();
+        }
+        
+        function showQuestion() {
+            const questionContainer = document.getElementById('question-container');
+            const optionsContainer = document.getElementById('options-container');
+            const nextButton = document.getElementById('next-btn');
+            
+            questionContainer.innerHTML = `<p class="text-lg font-medium">${quizQuestions[currentQuestion].question}</p>`;
+            optionsContainer.innerHTML = '';
+            
+            quizQuestions[currentQuestion].options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'w-full text-left bg-pink-50 hover:bg-pink-100 p-3 rounded-lg border border-pink-100 transition duration-200';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+            
+            nextButton.classList.add('hidden');
+        }
+        
+        function selectAnswer(selectedIndex) {
+            const options = document.querySelectorAll('#options-container button');
+            const correctIndex = quizQuestions[currentQuestion].answer;
+            const nextButton = document.getElementById('next-btn');
+            
+            options.forEach((option, index) => {
+                option.disabled = true;
+                if (index === correctIndex) {
+                    option.classList.add('bg-green-100', 'border-green-200');
+                } else {
+                    option.classList.add('bg-gray-100', 'border-gray-200');
+                }
+            });
+            
+            if (selectedIndex === correctIndex) {
+                score++;
+                options[selectedIndex].classList.add('border-green-400', 'border-2');
+            } else {
+                options[selectedIndex].classList.add('border-red-400', 'border-2');
+            }
+            
+            nextButton.classList.remove('hidden');
+        }
+        
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizQuestions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+        
+        function showResult() {
+            document.getElementById('quiz-questions').classList.add('hidden');
+            const resultContainer = document.getElementById('quiz-result');
+            const resultText = document.getElementById('result-text');
+            
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+            
+            if (percentage >= 80) {
+                resultText.textContent = `Você acertou ${score} de ${quizQuestions.length} perguntas! (${percentage}%) Você me conhece como ninguém, somos alma gêmeas mesmo! ❤️`;
+            } else if (percentage >= 50) {
+                resultText.textContent = `Você acertou ${score} de ${quizQuestions.length} perguntas! (${percentage}%) Você me conhece bem, mas ainda podemos nos conhecer melhor. Que tal mais um encontro? 😊`;
+            } else {
+                resultText.textContent = `Você acertou ${score} de ${quizQuestions.length} perguntas! (${percentage}%) Poxa, precisamos passar mais tempo juntos! Aceita um convite para um jantar romântico? 💘`;
+            }
+            
+            resultContainer.classList.remove('hidden');
+        }
+        
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-questions').classList.remove('hidden');
+            showQuestion();
+        }
+        
+        // Confetti effect
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            const characters = ['❤️', '💕', '💖', '💗', '💓', '💞', '💘'];
+            
+            container.innerHTML = '';
+            container.classList.remove('hidden');
+            
+            const confettiCount = 50;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'absolute text-2xl';
+                confetti.innerHTML = characters[Math.floor(Math.random() * characters.length)];
+                
+                const left = Math.random() * 100;
+                const animationDuration = 3 + Math.random() * 3;
+                const delay = Math.random() * 5;
+                const size = 20 + Math.random() * 20;
+                
+                confetti.style.left = `${left}%`;
+                confetti.style.top = '-50px';
+                confetti.style.animation = `confetti ${animationDuration}s ease-out ${delay}s forwards`;
+                confetti.style.fontSize = `${size}px`;
+                confetti.style.opacity = '0';
+                
+                container.appendChild(confetti);
+            }
+            
+            setTimeout(() => {
+                container.classList.add('hidden');
+            }, 8000);
+        }
+        
+        // Music toggle
+        function toggleMusic() {
+            const musicPlayer = document.getElementById('music-player');
+            const music = document.getElementById('bg-music');
+            const toggleButton = document.getElementById('toggle-music');
+            
+            if (musicPlayer.dataset.playing === 'false') {
+                music.play();
+                musicPlayer.dataset.playing = 'true';
+                toggleButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14"></path>
+                    </svg>
+                `;
+            } else {
+                music.pause();
+                musicPlayer.dataset.playing = 'false';
+                toggleButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                    </svg>
+                `;
+            }
+        }
+        
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+        
+        // Intersection Observer for sections
+        function setupIntersectionObserver() {
+            const sections = document.querySelectorAll('.section');
+            const options = {
+                threshold: 0.2
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, options);
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        }
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            createHearts();
+            calculateTimeTogether();
+            setInterval(calculateTimeTogether, 60000); // Update every minute
+            
+            // Event listeners
+            document.getElementById('next-btn').addEventListener('click', nextQuestion);
+            document.getElementById('say-yes').addEventListener('click', createConfetti);
+            document.getElementById('toggle-music').addEventListener('click', toggleMusic);
+            document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
+            
+            // Show music player
+            document.getElementById('music-player').classList.remove('hidden');
+            
+            // Setup intersection observer for animations
+            setupIntersectionObserver();
+            
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        const headerHeight = document.querySelector('header').offsetHeight;
+                        const targetPosition = targetElement.offsetTop - headerHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Close mobile menu if open
+                        document.getElementById('mobile-menu').classList.add('hidden');
+                    }
+                });
+            });
+        });
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('letter-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
